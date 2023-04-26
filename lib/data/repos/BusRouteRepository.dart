@@ -6,12 +6,14 @@ import 'package:ticket_agent/data/model/BordingPointsResponce.dart';
 import 'package:ticket_agent/data/model/BusDetailRequest.dart';
 import 'package:ticket_agent/data/model/BusDetailResponse.dart';
 import 'package:ticket_agent/data/model/BusRouteResponse.dart';
+import 'package:ticket_agent/data/model/PaymentModel.dart';
 import 'package:ticket_agent/data/model/booking_req.dart';
 import 'package:ticket_agent/data/model/city_response.dart';
 import 'package:ticket_agent/data/services/ApiClient.dart';
 import 'package:ticket_agent/data/model/login_response.dart';
 import 'package:ticket_agent/data/services/ApiClient.dart';
 
+import '../model/PaymentUpdateModel.dart';
 import '../model/bus_layout_filter_response.dart';
 
 class BusRouteRepository {
@@ -34,4 +36,12 @@ class BusRouteRepository {
     return _client.BookingApi(request);
   }
 
+  Future<PaymentModel?>  getPaymentMode(int routeid) {
+    return _client.getPaymentMode(routeid);
+  }
+
+
+  Future<PaymentUpdateModel?>  getSuccessTransaction(int channelid,var paymode,var transid) {
+    return _client.getSuccessTransaction(channelid,paymode,transid);
+  }
 }

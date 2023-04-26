@@ -12,13 +12,15 @@ import 'package:ticket_agent/utils/LangConstants.dart';
 import 'package:ticket_agent/utils/MyThemes.dart';
 
 import '../../components/button_loading_view.dart';
+import '../../utils/validator.dart';
 
 class PassengerDetailPage extends StatefulWidget {
   PassengerList formsdetails;
   var index;
+  bool valid;
 
   PassengerDetailPage(
-      {Key? key, required this.formsdetails, required this.index})
+      {Key? key, required this.formsdetails, required this.index,required this.valid})
       : super(key: key);
 
   @override
@@ -69,7 +71,8 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
         borderRadius: const BorderRadius.all(Radius.circular(5)),
       ),
       child: Form(
-        key: _formKey,
+        key: formKey,
+        autovalidateMode: AutovalidateMode.disabled,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -85,7 +88,7 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                           Colors.black, FontWeight.bold, 15),
                     ),
                     Text(
-                      "Seat No :${(controller.selectedSeats.toList()[widget.index].colI + 1) * (controller.selectedSeats.toList()[widget.index].rowI + 1)}",
+                      "Seat No :${(controller.selectedList[widget.index].seatNo)}",
                       style: AppStyle.customTextTheme(
                           Colors.black, FontWeight.bold, 15),
                     )
@@ -100,19 +103,27 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                   children: [
                     Expanded(
                       child: Container(
-                        height: 50,
                         child: TextFormField(
+                          autovalidateMode:
+                          AutovalidateMode.onUserInteraction,
                           controller: widget.firstNameController,
                           decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide()),
+                              errorBorder: Validator().customerrorBorder,
                               hintText: " First Name"),
+
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter some text';
                             }
                             return null;
+                          },
+                          onChanged: (value) {
+                            widget.valid = formKey.currentState!.validate();
                           },
                         ),
                       ),
@@ -122,19 +133,26 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                     ),
                     Expanded(
                       child: Container(
-                        height: 50,
                         child: TextFormField(
+                          autovalidateMode:
+                          AutovalidateMode.onUserInteraction,
                           controller: widget.lastNameController,
                           decoration: InputDecoration(
+                              contentPadding:
+                              EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide()),
+                              errorBorder: Validator().customerrorBorder,
                               hintText: LangConstants.ac_sv_ps_det_lst_name.tr),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter some text';
                             }
                             return null;
+                          },
+                          onChanged: (value) {
+                            widget.valid = formKey.currentState!.validate();
                           },
                         ),
                       ),
@@ -144,20 +162,27 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                 height: 20,
               ),
               Container(
-                height: 50,
                 child: TextFormField(
+                  autovalidateMode:
+                  AutovalidateMode.onUserInteraction,
                   controller: widget.mobileController,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: InputDecoration(
+                      contentPadding:
+                      EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide()),
+                      errorBorder: Validator().customerrorBorder,
                       hintText: LangConstants.ac_sv_ps_det_mobl_no.tr),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
-                    return value;
+                    return null;
+                  },
+                  onChanged: (value) {
+                    widget.valid = formKey.currentState!.validate();
                   },
                 ),
               ),
@@ -173,12 +198,12 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide()),
                       hintText: LangConstants.ac_tic_pay_eml.tr),
-                  validator: (value) {
+                /*  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
                     return null;
-                  },
+                  },*/
                 ),
               ),
               Row(
@@ -240,12 +265,12 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide()),
                                 hintText: " Kin Name"),
-                            validator: (value) {
+                           /* validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
                               }
                               return null;
-                            },
+                            },*/
                           ),
                         ),
                         Container(
@@ -263,12 +288,12 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                                     borderRadius: BorderRadius.circular(10),
                                     borderSide: BorderSide()),
                                 hintText: " Kin Mobile"),
-                            validator: (value) {
+                          /*  validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter some text';
                               }
                               return null;
-                            },
+                            },*/
                           ),
                         ),
                       ],
@@ -416,12 +441,12 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                                         : widget.isPassport
                                             ? "Enter passport"
                                             : " "),
-                        validator: (value) {
+                       /* validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter some text';
                           }
                           return null;
-                        },
+                        },*/
                       ),
                     )
                   : SizedBox.shrink()

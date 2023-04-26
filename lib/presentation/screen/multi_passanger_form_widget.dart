@@ -48,20 +48,20 @@ class _MultiPassangerFormWidgetState extends State<MultiPassangerFormWidget> {
     bool allValid = true;
     controller.passangerList.clear();
     //If any form validation function returns false means all forms are not valid
-    //  contactForms.forEach((element) => allValid = (allValid && element.isValidated()));
+    contactForms.forEach((element) =>
+    allValid = (allValid && element.valid));
 
-    // if (allValid) {
+    if (allValid) {
+    //  var selectedSeats = controller.selectedSeats.toList();
 
-    var selectedSeats = controller.selectedSeats.toList();
+      for (int i = 0; i < contactForms.length; i++) {
+        String seatType = "";
+        String seatNo = "";
+        int seatFare = 0;
 
-    for (int i = 0; i < contactForms.length; i++) {
-      String seatType = "";
-      String seatNo = "";
-      int seatFare = 0;
+        PassengerDetailPage item = contactForms[i];
 
-      PassengerDetailPage item = contactForms[i];
-
-      for (int j = 0; j < controller.response.value.busLayout!.length; j++) {
+        /* for (int j = 0; j < controller.selectedList.length; j++) {
         if (controller.response.value.busLayout![j].rowNo ==
                 selectedSeats[i].rowI.toString() &&
             controller.response.value.busLayout![j].colNo ==
@@ -71,39 +71,57 @@ class _MultiPassangerFormWidgetState extends State<MultiPassangerFormWidget> {
               controller.response.value.busLayout![j].seatType.toString();
           seatFare = controller.response.value.busLayout![j].seatFare!.toInt();
         }
+      }*/
+        seatNo = controller.selectedList[i].seatNo.toString();
+        seatType = controller.selectedList[i].seatType.toString();
+        seatFare = controller.selectedList[i].seatFare!.toInt();
+
+        PassengerList passangerInfoModel = PassengerList(
+            email: item.emailController.text,
+            firstName: item.firstNameController.text,
+            idProofType: item.idCardController.text,
+            lastName: item.lastNameController.text,
+            mobileNo: item.mobileController.text,
+            seatType: seatType,
+            seatNo: seatNo,
+            gender: item.gender,
+            type: "adult",
+            seatFare: seatFare,
+            insurance: "no",
+            insuranceAmount: 0);
+
+        controller.passangerList.add(passangerInfoModel);
       }
-
-      PassengerList passangerInfoModel = PassengerList(
-          email: item.emailController.text,
-          firstName: item.firstNameController.text,
-          idProofType: item.idCardController.text,
-          lastName: item.lastNameController.text,
-          mobileNo: item.mobileController.text,
-          seatType: seatType,
-          seatNo: seatNo,
-          gender: item.gender,
-          type: "adult",
-          seatFare: seatFare,
-          insurance: "no",
-          insuranceAmount: 0);
-
-      controller.passangerList.add(passangerInfoModel);
+      Get.to(TicketDetails());
+      //Submit Form Here
+      // } else {
+      //    debugPrint("Form is Not Valid");
+      // }
     }
-    Get.to(TicketDetails());
-    //Submit Form Here
-    // } else {
-    //    debugPrint("Form is Not Valid");
-    // }
   }
 
   @override
   void initState() {
     setState(() {
-      for (int a = 0; a < controller.selectedSeats.length; a++) {
+      for (int a = 0; a < controller.selectedList.length; a++) {
         contactForms.add(PassengerDetailPage(
-            formsdetails: PassengerList.param(a), index: a));
+            formsdetails: PassengerList.param(a), index: a,valid:false));
       }
     });
+
+    String bseatList = "";
+    for (int i = 0; i < controller.selectedList.length; i++) {
+
+      bseatList = bseatList + controller
+          .selectedList[i].seatNo
+          .toString() + ',';
+
+    }
+
+    bseatList = bseatList.substring(0, bseatList.length - 1);
+    print(bseatList);
+    controller.seatno = bseatList;
+
     super.initState();
   }
 

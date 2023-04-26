@@ -6,7 +6,12 @@ class StringUtils
   static String send = "Send";
  // static String base_url = "http://64.225.8.107/itiketi-app-interface/busservice/customer/" ;
 //  static String base_url = "http://103.118.16.126/afritekmobile/busservice/customer/" ;
-  static String base_url = "http://103.118.16.126/afritekmobile/busservice/customer/" ;
+  static String base_url = "http://103.118.16.126/afritekmobiletest/busservice/customer/" ;
+  static String base_url1 = "http://103.118.16.126/afritekmobiletest/busservice/" ;
+
+//  static String base_url = "http://103.118.16.126/afritekmobiletest/busservice/customer/" ;
+
+
   static String imageBasePath = "assets/images/";
   static String loginInfosp = "loginInfoSp";
 

@@ -71,57 +71,226 @@ class _SeatLayoutPageState extends State<SeatLayoutPage> {
                   // listOfSeats.clear();
                 }
 
-                return CustomScrollView(
+                return /*CustomScrollView(
                   slivers: [
                     SliverFillRemaining(
                       hasScrollBody: true,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                              width: MediaQuery.of(context).size.width,
-                              padding: EdgeInsets.all(10),
-                              child: Card(
+                      child:*/
+                    SingleChildScrollView(
+                        child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Container(
+                        width: MediaQuery.of(context).size.width,
+                        padding: EdgeInsets.all(10),
+                        child: Card(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              colorLayoutUI(ColorUtils.black, "Blocked"),
+                              colorLayoutUI(ColorUtils.pink, "Women"),
+                              colorLayoutUI(ColorUtils.lightGrey, "Empty"),
+                              colorLayoutUI(ColorUtils.green, "Selected"),
+                              colorLayoutUI(ColorUtils.primary, "Booked")
+                            ],
+                          ),
+                        )),
+                    Container(
+                        padding: EdgeInsets.all(10),
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        child: Card(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    right: 20.0, top: 10, bottom: 5),
                                 child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    colorLayoutUI(ColorUtils.black, "Blocked"),
-                                    colorLayoutUI(ColorUtils.pink, "Women"),
-                                    colorLayoutUI(
-                                        ColorUtils.lightGrey, "Empty"),
-                                    colorLayoutUI(ColorUtils.green, "Selected"),
-                                    colorLayoutUI(ColorUtils.primary, "Booked")
+                                    SvgPicture.asset(
+                                        "${StringUtils.imageBasePath}steering_wheel.svg")
                                   ],
                                 ),
-                              )),
-                          Container(
-                              padding: EdgeInsets.all(10),
-                              width: MediaQuery.of(context).size.width,
-                              child: Card(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 20.0, top: 10, bottom: 5),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          SvgPicture.asset(
-                                              "${StringUtils.imageBasePath}steering_wheel.svg")
-                                        ],
-                                      ),
-                                    ),
-                                    Divider(thickness: 1),
-                                    Container(
-                                      padding: EdgeInsets.all(5),
-                                      margin: EdgeInsets.only(left: 10),
-                                      width: MediaQuery.of(context).size.width,
-                                      alignment: Alignment.center,
-                                      child: SeatLayoutWidget(
+                              ),
+                              Divider(thickness: 1),
+                              Container(
+                                padding: EdgeInsets.all(5),
+                                margin: EdgeInsets.only(left: 10),
+                                width: MediaQuery.of(context).size.width,
+                                height:
+                                    MediaQuery.of(context).size.height / 2,
+                                alignment: Alignment.center,
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: myController
+                                        .response.value.columnCount!,
+                                    mainAxisSpacing: 8.0,
+                                    crossAxisSpacing: 15.0,
+                                    childAspectRatio: 2 /
+                                        3, //assuming a seat aspect ratio of 2:3
+                                  ),
+                                  itemCount:
+                                      myController.response.value.columnCount! *
+                                          myController.response.value.rowCount!,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    final seatNumber = index + 1;
+                                    final isSeatSelected = true;
+                                    // _selectedSeats.contains(seatNumber);
+                                    final isSeatReserved =
+                                        seatNumber == 3 || seatNumber == 12;
+
+                                    Widget seatWidget;
+
+                                    /* if (isSeatReserved) {
+                                            seatWidget = const Icon(
+                                              Icons.event_seat,
+                                              color: Colors.grey,
+                                            );
+                                          } else {*/
+                                    seatWidget = GestureDetector(
+                                        onTap: () {
+                                          //_toggleSeatSelection(seatNumber)
+                                          if (myController.response.value
+                                                  .busLayout![index].status ==
+                                              "available") {
+                                            myController.selectedList.add(
+                                                myController.response.value
+                                                    .busLayout![index]);
+                                            myController
+                                                .response
+                                                .value
+                                                .busLayout![index]
+                                                .status = "click";
+
+                                            setState(() {});
+                                            /*showMaterialModalBottomSheet(
+                                              context: context,
+                                              builder: (context) =>
+                                                  seatBottomSheet(
+                                                      myController:
+                                                          myController),
+                                            );*/
+                                          } else {
+                                            if (myController.response.value
+                                                    .busLayout![index].status ==
+                                                "click") {
+                                              myController.selectedList.remove(
+                                                  myController.response.value
+                                                      .busLayout![index]);
+
+                                              myController
+                                                  .response
+                                                  .value
+                                                  .busLayout![index]
+                                                  .status = "available";
+
+                                              setState(() {});
+                                            }
+                                          }
+                                        },
+                                        child: Stack(
+                                          children: [
+                                            myController
+                                                        .response
+                                                        .value
+                                                        .busLayout![index]
+                                                        .status ==
+                                                    "available"
+                                                ? Image.asset(
+                                                    'assets/images/seat_unbooked.png')
+                                                : myController
+                                                                .response
+                                                                .value
+                                                                .busLayout![
+                                                                    index]
+                                                                .status ==
+                                                            "confirmed"
+
+                                                    ? Image.asset(
+                                                        'assets/images/seat_booked.png'):
+                                            myController
+                                                .response
+                                                .value
+                                                .busLayout![
+                                            index]
+                                                .status ==
+                                                "click"?
+                                            Image.asset(
+                                                'assets/images/seat_selected.png')
+                                                    : myController
+                                                .response
+                                                .value
+                                                .busLayout![
+                                            index]
+                                                .status ==
+                                                "partially pending"
+                                                ? Image.asset(
+                                                'assets/images/partpending.jpeg'):
+                                            Image.asset(
+                                                        'assets/images/seat_unbooked.png'),
+                                            Positioned.fill(
+                                                bottom: 30,
+                                                child: Center(
+                                                    child: Text(
+                                                        myController
+                                                                .response
+                                                                .value
+                                                                .busLayout![
+                                                                    index]
+                                                                .seatType! +
+                                                            '\n' +
+                                                            myController
+                                                                .response
+                                                                .value
+                                                                .busLayout![
+                                                                    index]
+                                                                .seatNo!,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: myController
+                                                                    .response
+                                                                    .value
+                                                                    .busLayout![
+                                                                        index]
+                                                                    .status ==
+                                                                "confirmed"
+                                                            ? AppStyle
+                                                                .customTextTheme(
+                                                                ColorUtils
+                                                                    .white,
+                                                                FontWeight.w500,
+                                                                10,
+                                                              )
+                                                            : AppStyle
+                                                                .customTextTheme(
+                                                                ColorUtils
+                                                                    .black,
+                                                                FontWeight.w500,
+                                                                10,
+                                                              ))))
+                                          ],
+                                        )
+                                        /*Icon(
+                                                isSeatSelected ? Icons.event_seat : Icons.event_available,
+                                                color: isSeatSelected ? Colors.blue : Colors.green,
+                                              ),*/
+                                        );
+                                    // }
+
+                                    if (!myController.response.value
+                                        .busLayout![index].isSeat!) {
+                                      return SizedBox.shrink();
+                                    } else {
+                                      return seatWidget;
+                                    }
+                                  },
+                                ),
+                                /*SeatLayoutWidget(
                                         onSeatStateChanged:
                                             (rowI, colI, seatState) {
                                           print("seatState $seatState");
@@ -142,7 +311,6 @@ class _SeatLayoutPageState extends State<SeatLayoutPage> {
                                             Fluttertoast.showToast(
                                                 msg: "Maximum 5 seats allowed");
                                           }
-
                                           showMaterialModalBottomSheet(
                                             context: context,
                                             builder: (context) =>
@@ -166,16 +334,128 @@ class _SeatLayoutPageState extends State<SeatLayoutPage> {
                                             seatSvgSize: 60,
                                             currentSeatsState:
                                                 listOfSeatsParent),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
-                    )
+                                      ),*/
+                              ),
+                              Container(
+                                  color: Colors.transparent,
+                                  height: 130,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Card(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Text("Ticket price",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.grey,
+                                                          FontWeight.w500,
+                                                          14)),
+                                              Text(
+                                                  "TZS. ${myController.selectedBus!.fare}",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.black,
+                                                          FontWeight.w500,
+                                                          16))
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Text("Total price",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.grey,
+                                                          FontWeight.w500,
+                                                          14)),
+                                              Text(
+                                                  "TZS. ${myController.selectedBus!.fare * myController.selectedList.length}",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.black,
+                                                          FontWeight.w500,
+                                                          16))
+                                            ],
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Column(
+                                            children: [
+                                              Text("Selected seats",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.grey,
+                                                          FontWeight.w500,
+                                                          14)),
+                                              Text(
+                                                  "${myController.selectedList.length} ",
+                                                  style:
+                                                      AppStyle.customTextTheme(
+                                                          ColorUtils.black,
+                                                          FontWeight.w500,
+                                                          16)),
+                                              SizedBox(height: 10),
+                                              SizedBox(
+                                                width: 100,
+                                                height: 30,
+                                                child: CustomLoadingButton(
+                                                    isLoading: false,
+                                                    title: "Pay Now",
+                                                    onPress: () {
+                                                      Get.to(
+                                                          BordingDropingPage());
+                                                    }),
+                                              )
+                                            ],
+                                          ),
+                                        ),
+/*
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text("Selected seats",
+                        style: AppStyle.customTextTheme(
+                            ColorUtils.grey, FontWeight.w500, 14)),
+                    Obx(() => Text("${myController.selectedList.length} ",
+                        style: AppStyle.customTextTheme(
+                            ColorUtils.black, FontWeight.w500, 16))),
+                    SizedBox(height: 10),
+                 */
+/*   SizedBox(
+                      width: 100,
+                      height: 30,
+                      child: CustomLoadingButton(
+                          isLoading: false,
+                          title: "Pay Now",
+                          onPress: () {
+                            Get.to(BordingDropingPage());
+                          }),
+                    )*/ /*
+
                   ],
-                );
+                ),
+              ),
+*/
+                                      ],
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        )),
+                  ],
+                ));
+                /*     )
+                  ],
+                );*/
               } else {
                 return Text("");
               }
@@ -202,6 +482,8 @@ class _SeatLayoutPageState extends State<SeatLayoutPage> {
         routeViacityId: myController.selectedBus!.routeViaCityId.toString(),
         routeViacityId1: 1,
         startId: myController.selectedBus!.source.toString())));
+
+    myController.selectedList.clear();
     super.initState();
   }
 }
@@ -296,7 +578,7 @@ class seatBottomSheet extends StatelessWidget {
                         style: AppStyle.customTextTheme(
                             ColorUtils.grey, FontWeight.w500, 14)),
                     Text(
-                        "TZS. ${myController.selectedBus!.fare * myController.selectedSeats.length}",
+                        "TZS. ${myController.selectedBus!.fare * myController.selectedList.length}",
                         style: AppStyle.customTextTheme(
                             ColorUtils.black, FontWeight.w500, 16))
                   ],
@@ -309,9 +591,9 @@ class seatBottomSheet extends StatelessWidget {
                     Text("Selected seats",
                         style: AppStyle.customTextTheme(
                             ColorUtils.grey, FontWeight.w500, 14)),
-                    Obx(() => Text("${myController.selectedSeats.length} ",
+                    Text("${myController.selectedList.length} ",
                         style: AppStyle.customTextTheme(
-                            ColorUtils.black, FontWeight.w500, 16))),
+                            ColorUtils.black, FontWeight.w500, 16)),
                     SizedBox(height: 10),
                     SizedBox(
                       width: 100,
@@ -326,6 +608,34 @@ class seatBottomSheet extends StatelessWidget {
                   ],
                 ),
               ),
+/*
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Text("Selected seats",
+                        style: AppStyle.customTextTheme(
+                            ColorUtils.grey, FontWeight.w500, 14)),
+                    Obx(() => Text("${myController.selectedList.length} ",
+                        style: AppStyle.customTextTheme(
+                            ColorUtils.black, FontWeight.w500, 16))),
+                    SizedBox(height: 10),
+                 */
+/*   SizedBox(
+                      width: 100,
+                      height: 30,
+                      child: CustomLoadingButton(
+                          isLoading: false,
+                          title: "Pay Now",
+                          onPress: () {
+                            Get.to(BordingDropingPage());
+                          }),
+                    )*/ /*
+
+                  ],
+                ),
+              ),
+*/
             ],
           ),
         ));

@@ -23,7 +23,7 @@ class BookingResponse {
   String? responseMessage;
   int? ticketId;
   dynamic? refId;
-  int? insuranceTotal;
+  dynamic? insuranceTotal;
   int? total;
   int? grandTotal;
 

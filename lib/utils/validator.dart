@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+
 class Validator {
   final validateEmail =
   StreamTransformer<String, String>.fromHandlers(handleData: (value, sink) {
@@ -9,6 +11,14 @@ class Validator {
       sink.addError("This is not valid email");
     }
   });
+
+  final customerrorBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10.0),
+    borderSide: BorderSide(
+      color: Colors.red,
+      width: 1.0,
+    ),
+  );
 
   final validateName =
   StreamTransformer<String, String>.fromHandlers(handleData: (value, sink) {

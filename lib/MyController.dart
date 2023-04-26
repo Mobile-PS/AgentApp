@@ -27,6 +27,8 @@ class MyController extends GetxController
   RxSet<SeatNumber> selectedSeats = RxSet();
   Rx<BusDetailResponse> response= BusDetailResponse().obs;
   List<PassengerList> passangerList = List.empty(growable: true);
+  List<BusLayout> selectedList = List.empty(growable: true);
+  String seatno = "";
 
 
 

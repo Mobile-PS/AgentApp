@@ -129,6 +129,7 @@ class BusLayout {
     this.seatNo,
     this.isSeat,
     this.seatFare,
+    this.status
   });
 
   String? seatType;
@@ -137,6 +138,7 @@ class BusLayout {
   String? seatNo;
   bool? isSeat;
   double? seatFare;
+  String? status;
 
   factory BusLayout.fromJson(Map<String, dynamic> json) => BusLayout(
         seatType: json["seatType"],
@@ -145,7 +147,9 @@ class BusLayout {
         seatNo: json["seatNO"],
         isSeat: json["isSeat"],
         seatFare: json["seatFare"],
-      );
+        status: json["status"],
+
+  );
 
   Map<String, dynamic> toJson() => {
         "seatType": seatType,
@@ -154,5 +158,7 @@ class BusLayout {
         "seatNO": seatNo,
         "isSeat": isSeat,
         "seatFare": seatFare,
-      };
+    "status": status,
+
+  };
 }

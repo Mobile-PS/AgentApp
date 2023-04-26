@@ -20,6 +20,8 @@ import 'package:ticket_agent/utils/string_utils.dart';
 import '../model/BordingPointsResponce.dart';
 import '../model/BusDetailRequest.dart';
 import '../model/CancleTicketResponse.dart';
+import '../model/PaymentModel.dart';
+import '../model/PaymentUpdateModel.dart';
 import '../model/ReservationChartDetailsResponce.dart';
 import '../model/SaveTicketResponse.dart';
 import '../model/agentProfileResponse.dart';
@@ -29,6 +31,7 @@ import '../model/forgotPasswordResponse.dart';
 
 class ApiClient {
   Dio _dio = Dio();
+  Dio _dio1 = Dio();
 
   ApiClient() {
     _dio = Dio(BaseOptions(
@@ -37,6 +40,11 @@ class ApiClient {
       receiveTimeout: 100000,
     ));
 
+    _dio1 = Dio(BaseOptions(
+      baseUrl: StringUtils.base_url1,
+      connectTimeout: 100000,
+      receiveTimeout: 100000,
+    ));
     initializeInterceptors();
   }
 
@@ -144,6 +152,33 @@ class ApiClient {
     Response response = await _dio.post('saveticketDetails',
         data: bookingRequest.toJson(), options: Options(method: 'POST'));
     return BookingResponse.fromJson(response.data);
+  }
+
+  Future<PaymentModel?> getPaymentMode(int routID) async {
+    Response response = await _dio1.post('getAllPaymentSource',
+        data: {
+            "bookingChannel": "bus_agent_app",
+            "date": "2023-03-24",
+            "language": "english",
+            "route_id": routID
+        },
+         options: Options(method: 'POST'));
+
+    return PaymentModel.fromJson(response.data);
+  }
+
+  Future<PaymentUpdateModel?> getSuccessTransaction(int channelid,var paymode,var tickid) async {
+    Response response = await _dio.post('successTransaction',
+        data: {
+          "paymentChannel": channelid,
+          "paymentMode": paymode,
+          "status": "Success",
+          "ticketId": tickid,
+          "txnid": "0"
+        },
+        options: Options(method: 'POST'));
+
+    return PaymentUpdateModel.fromJson(response.data);
   }
 
   Future<AgentProfileResponse?> getAgentProfile(int agentId) async {

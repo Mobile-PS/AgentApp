@@ -15,13 +15,20 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
+class NavigationService {
+  static GlobalKey<NavigatorState> navigatorKey =
+  GlobalKey<NavigatorState>();
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      navigatorKey: NavigationService.navigatorKey,
       title: 'Flutter Demo',
         translations: AppTranslations(),
         locale:   Locale('en', 'US'),
